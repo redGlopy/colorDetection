@@ -1,0 +1,12 @@
+# Compiled Executables
+*.exe
+*.out
+
+# Build Directories
+build/
+bin/
+obj/
+
+# IDE Settings
+.vscode/
+.vs/
