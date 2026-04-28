@@ -19,7 +19,6 @@ void toggleFullscreen();
 
 int main() {
 
-    // moveCursor(100 , 100);
 
     if (!cap.isOpened()) {
         std::cerr << "error: could not open camera" << std::endl;
@@ -35,9 +34,6 @@ int main() {
 
 void mainLoop(){
     while (cv::getWindowProperty("webcam feed", cv::WND_PROP_VISIBLE) >= 1) {
-
-        toggleFullscreen();
-
         cap >> BGRFrame;
         if (BGRFrame.empty()) {
             break;
@@ -53,7 +49,7 @@ void mainLoop(){
         cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
         for (size_t i = 0; i < contours.size(); i++) {
-            if (cv::contourArea(contours[i]) < 500) {
+            if (cv::contourArea(contours[i]) < 1000) {
                 continue;
             }
 
@@ -66,6 +62,29 @@ void mainLoop(){
         
         cv::imshow("webcam feed", BGRFrame);
 
+        double maxArea = 0;
+        int largestContourIndex = -1;
+        for (int i = 0; i < contours.size(); i++) {
+            double area = cv::contourArea(contours[i]);
+            if (area > maxArea) {
+                maxArea = area;
+                largestContourIndex = i;
+            }
+        }
+
+        if (largestContourIndex != -1) {
+            if (maxArea > 1000) { 
+                cv::Moments m = cv::moments(contours[largestContourIndex]);
+                if (m.m00 > 0) {
+                    int pX = m.m10 / m.m00;
+                    int pY = m.m01 / m.m00;
+                    pX = 600 - pX;
+                    moveCursor((pX-300)/3, (pY-200)/3);
+                    // std::cout << "Main object center: (" << cX << ", " << cY << ")" << std::endl;
+                }
+            }
+        }
+
         if (cv::waitKey(10) == 27) {
             break; 
         }
@@ -76,8 +95,8 @@ void moveCursor(int x, int y) {
     int width = GetSystemMetrics(SM_CYSCREEN);
     int height = GetSystemMetrics(SM_CYSCREEN);
 
-    int absoluteX = (x * 65536) / width;
-    int absoluteY = (y * 65536) / height;
+    int absoluteX = (x / width) * 65536;
+    int absoluteY = (y / height) * 65536;
 
     INPUT input = {0};
     input.type = INPUT_MOUSE;
