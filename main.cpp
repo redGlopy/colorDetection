@@ -10,12 +10,11 @@ cv::Mat BGRFrame;
 cv::Mat HSVFrame;
 cv::Mat mask;
 
-cv::Scalar lowerYellow = cv::Scalar(25, 50, 50);
-cv::Scalar higherYellow = cv::Scalar(35, 255, 255);
+cv::Scalar lowerYellow = cv::Scalar(20, 50, 50);
+cv::Scalar higherYellow = cv::Scalar(25, 255, 255);
 
 void mainLoop();
-void moveCursor(int dx, int dy);
-void toggleFullscreen();
+void moveCursor(int x, int y);
 
 int main() {
 
@@ -48,6 +47,9 @@ void mainLoop(){
         std::vector<std::vector<cv::Point>> contours;
         cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
+        double maxArea = 0;
+        int largestContourIndex = -1;
+
         for (size_t i = 0; i < contours.size(); i++) {
             if (cv::contourArea(contours[i]) < 1000) {
                 continue;
@@ -58,19 +60,15 @@ void mainLoop(){
 
             cv::putText(BGRFrame, "object detected", bbox.tl(), 
             cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
-        }        
-        
-        cv::imshow("webcam feed", BGRFrame);
 
-        double maxArea = 0;
-        int largestContourIndex = -1;
-        for (int i = 0; i < contours.size(); i++) {
             double area = cv::contourArea(contours[i]);
             if (area > maxArea) {
                 maxArea = area;
                 largestContourIndex = i;
             }
-        }
+        }        
+        
+        cv::imshow("webcam feed", BGRFrame);
 
         if (largestContourIndex != -1) {
             if (maxArea > 1000) { 
@@ -80,7 +78,6 @@ void mainLoop(){
                     int pY = m.m01 / m.m00;
                     pX = 600 - pX;
                     moveCursor((pX-300)/3, (pY-200)/3);
-                    // std::cout << "Main object center: (" << cX << ", " << cY << ")" << std::endl;
                 }
             }
         }
@@ -92,7 +89,7 @@ void mainLoop(){
 }
 
 void moveCursor(int x, int y) {
-    int width = GetSystemMetrics(SM_CYSCREEN);
+    int width = GetSystemMetrics(SM_CXSCREEN);
     int height = GetSystemMetrics(SM_CYSCREEN);
 
     int absoluteX = (x / width) * 65536;
@@ -102,23 +99,7 @@ void moveCursor(int x, int y) {
     input.type = INPUT_MOUSE;
     input.mi.dx = x;         
     input.mi.dy = y;         
-    input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE; 
+    input.mi.dwFlags = MOUSEEVENTF_MOVE; 
     
     SendInput(1, &input, sizeof(INPUT));
-}
-
-void toggleFullscreen(){
-    static bool isFullscreen = false;
-
-    int key = cv::waitKeyEx(1);
-
-    if (key == 1122) { 
-        if (isFullscreen) {
-            cv::setWindowProperty("webcam feed", cv::WND_PROP_FULLSCREEN, cv::WINDOW_NORMAL);
-            isFullscreen = false;
-        }else {
-            cv::setWindowProperty("webcam feed", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
-            isFullscreen = true;
-        }
-    }
 }
