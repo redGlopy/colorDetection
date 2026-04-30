@@ -5,9 +5,16 @@ project(colorDetection)
 find_package(OpenCV REQUIRED)
 
 # 2. Tell CMake which source file to use
-add_executable(colorDetection main.cpp)
+add_executable(colorDetection
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/window.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/cursorMovment.cpp
+)
 
 # 3. Link the OpenCV libraries to your app
 target_link_libraries(colorDetection ${OpenCV_LIBS})
 
 include_directories(${OpenCV_INCLUDE_DIRS})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../hpp)
+
