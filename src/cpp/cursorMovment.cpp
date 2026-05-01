@@ -14,4 +14,3 @@ void cursorMovment::moveCursor(int x, int y) {
 
     SendInput(1, &input, sizeof(INPUT));
 }
-

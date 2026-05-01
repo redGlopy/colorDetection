@@ -10,8 +10,8 @@ cv::VideoCapture cap(0);
 cv::Mat BGRFrame;
 cv::Mat HSVFrame;
 cv::Mat mask;
-cv::Scalar lowerYellow = cv::Scalar(20, 50, 50);
-cv::Scalar higherYellow = cv::Scalar(25, 255, 255);
+cv::Scalar lowerColor = cv::Scalar(24, 10, 40);
+cv::Scalar higherColor = cv::Scalar(44, 100, 160);
 
 window::window(){
     if (!cap.isOpened()) {
@@ -24,7 +24,7 @@ void window::refreshWindow(){
     cap >> BGRFrame;
 
     cv::cvtColor(BGRFrame, HSVFrame, cv::COLOR_BGR2HSV);
-    cv::inRange(HSVFrame, lowerYellow, higherYellow, mask);
+    cv::inRange(HSVFrame, lowerColor, higherColor, mask);
 
     cv::Mat kernel = getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
     cv::morphologyEx(mask, mask, cv::MORPH_OPEN, kernel);
@@ -36,7 +36,7 @@ void window::refreshWindow(){
     int largestContourIndex = -1;
 
     for (size_t i = 0; i < contours.size(); i++) {
-        if (cv::contourArea(contours[i]) < 1000) {
+        if (cv::contourArea(contours[i]) < 2000) {
             continue;
         }
 
