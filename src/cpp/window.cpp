@@ -4,7 +4,6 @@
 #include <opencv2/highgui.hpp>
 #include "window.hpp"
 
-
 cv::VideoCapture cap(0);
 
 cv::Mat BGRFrame;
@@ -13,15 +12,34 @@ cv::Mat mask;
 cv::Scalar lowerColor = cv::Scalar(24, 10, 40);
 cv::Scalar higherColor = cv::Scalar(44, 100, 160);
 
+int lowH=24;
+int lowS=10;
+int lowV=40;
+int highH=44;
+int highS=100;
+int highV=160;
+
 window::window(){
     if (!cap.isOpened()) {
         std::cerr << "error: could not open camera" << std::endl;
     }   
+
     cv::namedWindow("webcam feed", cv::WINDOW_NORMAL);
+
+    cv::createTrackbar("lowH", "webcam feed", &lowH, 179, nullptr);
+    cv::createTrackbar("lowS", "webcam feed", &lowS, 255, nullptr);
+    cv::createTrackbar("lowV", "webcam feed", &lowV, 255, nullptr);
+    cv::createTrackbar("highH", "webcam feed", &highH, 179, nullptr);
+    cv::createTrackbar("highS", "webcam feed", &highS, 255, nullptr);
+    cv::createTrackbar("highV", "webcam feed", &highV, 255, nullptr);
+
 }
 
 void window::refreshWindow(){
     cap >> BGRFrame;
+
+    lowerColor = cv::Scalar(lowH, lowS, lowV);
+    higherColor = cv::Scalar(highH, highS, highV);
 
     cv::cvtColor(BGRFrame, HSVFrame, cv::COLOR_BGR2HSV);
     cv::inRange(HSVFrame, lowerColor, higherColor, mask);
@@ -51,8 +69,8 @@ void window::refreshWindow(){
             largestContourIndex = i;
         }
     }
-    
-    cv::imshow("webcam feed", BGRFrame);
+
+    cv::imshow("webcam feed", mask);
 
     if (largestContourIndex != -1) {
         if (maxArea > 1000) { 
@@ -61,7 +79,7 @@ void window::refreshWindow(){
                 int pX = m.m10 / m.m00;
                 int pY = m.m01 / m.m00;
                 pX = 600 - pX;
-                cursorMovment.moveCursor((pX-300)/3, (pY-200)/3);
+                // cursorMovment.moveCursor((pX-300)/3, (pY-200)/3);
             }
         }
     }
