@@ -10,8 +10,8 @@ cv::VideoCapture cap(0);
 cv::Mat BGRFrame;
 cv::Mat HSVFrame;
 cv::Mat mask;
-cv::Scalar lowerColor = cv::Scalar(24, 10, 40);
-cv::Scalar higherColor = cv::Scalar(44, 100, 160);
+cv::Scalar lowerColor = cv::Scalar(20, 100, 100);
+cv::Scalar higherColor = cv::Scalar(35, 255, 255);
 
 window::window(){
     if (!cap.isOpened()) {
