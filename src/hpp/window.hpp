@@ -8,7 +8,6 @@ class window{
         void refreshWindow();
 
     private: 
-        cursorMovment cursorMovment;
         // cv::Mat BGRFrame;
         // cv::Mat HSVFrame;
         // cv::Mat mask;

@@ -14,6 +14,7 @@ add_executable(colorDetection
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/window.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/cursorMovment.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/objectDetection.cpp
     ${GRT_SOURCES}   # compiles all GRT .cpp files
 )
 
