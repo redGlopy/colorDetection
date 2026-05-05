@@ -8,7 +8,7 @@ class window{
         void refreshWindow();
 
     private: 
-        // cv::Mat BGRFrame;
-        // cv::Mat HSVFrame;
-        // cv::Mat mask;
+        cv::Mat BGRFrame;
+        cv::Mat HSVFrame;
+        cv::Mat mask;
 };

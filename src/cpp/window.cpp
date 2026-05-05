@@ -13,7 +13,7 @@ cv::Mat mask;
 cv::Scalar lowerColor = cv::Scalar(24, 10, 40);
 cv::Scalar higherColor = cv::Scalar(44, 100, 160);
 
-int lowH=20;
+int lowH=21;
 int lowS=100;
 int lowV=100;
 int highH=28;
@@ -46,7 +46,7 @@ void window::refreshWindow(){
 
     detection.detectColor(lowerColor, higherColor, BGRFrame, HSVFrame, mask, detection.contours);
 
-    cv::imshow("webcam feed", BGRFrame);
+    cv::imshow("webcam feed", mask);
 
     detection.canMoveCursor(detection.contours);
 }
