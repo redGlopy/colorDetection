@@ -28,8 +28,8 @@ void objectDetection::detectColor(cv::Scalar low, cv::Scalar high, cv::Mat& bgr,
 
         cv::Rect bbox = cv::boundingRect(contours[i]);
         cv::rectangle(bgr, bbox, cv::Scalar(0, 255, 0), 2);
-        cv::putText(bgr, "object detected", bbox.tl(), 
-        cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
+        // cv::putText(bgr, "object detected", bbox.tl(),
+        // cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
         
         double area = cv::contourArea(contours[i]);
         if (area > maxArea) {
@@ -37,6 +37,8 @@ void objectDetection::detectColor(cv::Scalar low, cv::Scalar high, cv::Mat& bgr,
             largestContourIndex = i;
         }
     }
+
+    // findFingers(bgr, contours, largestContourIndex);
 }
 
 void objectDetection::canMoveCursor(std::vector<std::vector<cv::Point>>& contours) {
@@ -80,5 +82,16 @@ void objectDetection::canMoveCursor(std::vector<std::vector<cv::Point>>& contour
     } else {
         prevX = -1;
         prevY = -1;
+    }
+}
+
+void findFingers(cv::Mat frame, std::vector<std::vector<cv::Point>> contours, int largestConture){
+    if(largestConture != 0){ 
+
+        cv::Rect palm = cv::boundingRect(contours[largestConture]);
+        cv::Rect indexFindger(palm.x + (palm.width * 0.75), palm.y, palm.width * 0.25, -palm.height);
+        // cv::Rect middleFinger(palm.x + (palm.width * 0.5), palm.y, palm.width * 0.25, -palm.height);
+        
+        cv::rectangle(frame, indexFindger, cv::Scalar(0, 0, 255), 2);
     }
 }
