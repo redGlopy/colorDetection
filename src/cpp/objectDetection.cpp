@@ -3,10 +3,7 @@
 #include "cursorMovment.hpp"
 #include "objectDetection.hpp"
 #include <iostream>
-
-double maxArea = 0;
-int largestContourIndex = -1;
-std::vector<std::vector<cv::Point>> contours;
+#include <cmath>
 
 void objectDetection::detectColor(cv::Scalar low, cv::Scalar high, cv::Mat& bgr, cv::Mat& hsv, cv::Mat& mask, std::vector<std::vector<cv::Point>>& contours){
     maxArea = 0;
@@ -38,7 +35,7 @@ void objectDetection::detectColor(cv::Scalar low, cv::Scalar high, cv::Mat& bgr,
         }
     }
 
-    // findFingers(bgr, contours, largestContourIndex);
+    findFingers(contours, largestContourIndex);
 }
 
 void objectDetection::canMoveCursor(std::vector<std::vector<cv::Point>>& contours) {
@@ -85,13 +82,59 @@ void objectDetection::canMoveCursor(std::vector<std::vector<cv::Point>>& contour
     }
 }
 
-void findFingers(cv::Mat frame, std::vector<std::vector<cv::Point>> contours, int largestConture){
-    if(largestConture != 0){ 
+double objectDetection::getAngle(cv::Point far, cv::Point start, cv::Point end) {
+    double l1 = cv::norm(start - far);
+    double l2 = cv::norm(end - far);
+    double dot = (start - far).dot(end - far);
+    return std::acos(dot / (l1 * l2)) * 180.0 / CV_PI;
+}
 
-        cv::Rect palm = cv::boundingRect(contours[largestConture]);
-        cv::Rect indexFindger(palm.x + (palm.width * 0.75), palm.y, palm.width * 0.25, -palm.height);
-        // cv::Rect middleFinger(palm.x + (palm.width * 0.5), palm.y, palm.width * 0.25, -palm.height);
-        
-        cv::rectangle(frame, indexFindger, cv::Scalar(0, 0, 255), 2);
+void objectDetection::findFingers(const std::vector<std::vector<cv::Point>>& contours, int largestContour) {
+    if (contours.empty() || largestContour < 0 || largestContour >= static_cast<int>(contours.size())) {
+        std::cout << "Invalid contour index" << std::endl;
+        return;
     }
+
+    const std::vector<cv::Point>& handContour = contours[largestContour];
+    
+    if (handContour.size() < 3) return; 
+
+    std::vector<int> hullIndices;
+    cv::convexHull(handContour, hullIndices, true, false); 
+
+    int fingerCount = 0;
+    
+    if (hullIndices.size() > 3) {
+        std::vector<cv::Vec4i> defects;
+        
+        try {
+            cv::convexityDefects(handContour, hullIndices, defects);
+
+            for (const auto& defect : defects) {
+                if (defect[0] >= handContour.size() || 
+                    defect[1] >= handContour.size() || 
+                    defect[2] >= handContour.size()) continue;
+
+                cv::Point start = handContour[defect[0]];
+                cv::Point end   = handContour[defect[1]];
+                cv::Point far   = handContour[defect[2]];
+                float depth     = defect[3] / 256.0f;
+
+                if (depth > 20.0f) {
+                    double angle = getAngle(far, start, end);
+                    if (angle < 90.0) {
+                        fingerCount++;
+                    }
+                }
+            }
+
+            if (fingerCount > 0) {
+                fingerCount += 1; 
+            }
+        } 
+        catch (const cv::Exception& e) {
+            std::cerr << "OpenCV Exception in convexityDefects: " << e.what() << std::endl;
+        }
+    }
+    std::cout << "Fingers extended: " << fingerCount << std::endl;
 }
