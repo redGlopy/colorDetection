@@ -13,12 +13,12 @@ cv::Mat mask;
 cv::Scalar lowerColor = cv::Scalar(24, 10, 40);
 cv::Scalar higherColor = cv::Scalar(44, 100, 160);
 
-int lowH=21;
-int lowS=100;
-int lowV=100;
-int highH=28;
+int lowH=51;
+int lowS=74;
+int lowV=82;
+int highH=90;
 int highS=255;
-int highV=255;
+int highV=200;
 
 objectDetection detection;
 
