@@ -16,6 +16,8 @@ class objectDetection{
         int prevY = -1;
         float smoothX = 0;
         float smoothY = 0;
+        bool hasLeftClicked = false;
+        bool hasRightClicked = false;
         void findFingers(const std::vector<std::vector<cv::Point>>& contours, int largestContour);
         double getAngle(cv::Point far, cv::Point start, cv::Point end);
 };

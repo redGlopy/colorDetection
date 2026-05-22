@@ -97,7 +97,7 @@ void objectDetection::findFingers(const std::vector<std::vector<cv::Point>>& con
 
     const std::vector<cv::Point>& handContour = contours[largestContour];
     
-    if (handContour.size() < 3) return; 
+    if (handContour.size() < 3){return;} 
 
     std::vector<int> hullIndices;
     cv::convexHull(handContour, hullIndices, true, false); 
@@ -113,12 +113,13 @@ void objectDetection::findFingers(const std::vector<std::vector<cv::Point>>& con
             for (const auto& defect : defects) {
                 if (defect[0] >= handContour.size() || 
                     defect[1] >= handContour.size() || 
-                    defect[2] >= handContour.size()) continue;
+                    defect[2] >= handContour.size())
+                {continue;}
 
                 cv::Point start = handContour[defect[0]];
-                cv::Point end   = handContour[defect[1]];
-                cv::Point far   = handContour[defect[2]];
-                float depth     = defect[3] / 256.0f;
+                cv::Point end = handContour[defect[1]];
+                cv::Point far = handContour[defect[2]];
+                float depth = defect[3] / 256.0f;
 
                 if (depth > 20.0f) {
                     double angle = getAngle(far, start, end);
@@ -137,4 +138,17 @@ void objectDetection::findFingers(const std::vector<std::vector<cv::Point>>& con
         }
     }
     std::cout << "Fingers extended: " << fingerCount << std::endl;
+
+    //true is left click and false is right click
+    if(fingerCount == 2 && hasLeftClicked == false){
+        cursor.click(true);
+        hasLeftClicked = true;
+    }else if(fingerCount == 0 && hasRightClicked == false){
+        cursor.click(false);
+        hasRightClicked = true;
+    }else if(fingerCount == 3){
+        hasLeftClicked = false;
+        hasRightClicked = false;
+    }
+    
 }
