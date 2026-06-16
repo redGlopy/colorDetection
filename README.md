@@ -12,7 +12,10 @@ dependencies:
   openCV(version: 4.12.0).
   win32(the API that lets u move the cursor and more).
 
+HOW TO INSTALL :
+=======================================================================
 to install the program head to the newest release and install the .exe file
+=======================================================================
 
 the instructions file is inside of the folder for the program and please read it .
 
