@@ -10,3 +10,6 @@ obj/
 # IDE Settings
 .vscode/
 .vs/
+
+# Exception: Do track ColorDetectionInstaller
+!ColorDetectionInstaller
