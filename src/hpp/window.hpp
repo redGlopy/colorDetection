@@ -6,11 +6,9 @@ class window{
     public:
         window();
         void refreshWindow();
-        void onTrackbar(int, void*);
 
     private: 
-        cursorMovment cursorMovment;
-        // cv::Mat BGRFrame;
-        // cv::Mat HSVFrame;
-        // cv::Mat mask;
+        cv::Mat BGRFrame;
+        cv::Mat HSVFrame;
+        cv::Mat mask;
 };

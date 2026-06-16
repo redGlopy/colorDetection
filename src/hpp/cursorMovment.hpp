@@ -2,5 +2,6 @@
 
 class cursorMovment{
     public:
-    void moveCursor(int x, int y);
+        void moveCursor(int x, int y);
+        void click(bool isLeft);
 };

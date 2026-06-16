@@ -1,7 +1,9 @@
 #include "window.hpp"
 #include <opencv2/opencv.hpp>
+#include <windows.h>
 
 int main() {
+    
     window window;
 
     while (cv::getWindowProperty("webcam feed", cv::WND_PROP_VISIBLE) >= 1) {
