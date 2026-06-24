@@ -35,11 +35,11 @@ void objectDetection::detectColor(cv::Scalar low, cv::Scalar high, cv::Mat& bgr,
         }
     }
 
-    findFingers(contours, largestContourIndex);
 }
 
 void objectDetection::canMoveCursor(std::vector<std::vector<cv::Point>>& contours) {
     if (largestContourIndex != -1 && maxArea > 500) {
+        cursor.HoldLeftClick();
         cv::Moments m = cv::moments(contours[largestContourIndex]);
         if (std::abs(m.m00) > 0) {
             int pX = m.m10 / m.m00;
@@ -70,9 +70,8 @@ void objectDetection::canMoveCursor(std::vector<std::vector<cv::Point>>& contour
                 smoothX = smoothX * smoothing + deltaX * (1.0f - smoothing);
                 smoothY = smoothY * smoothing + deltaY * (1.0f - smoothing);
 
-                if(canMoveCursorBool = true){
-                    cursor.moveCursor((int)(smoothX * sensitivity), (int)(smoothY * sensitivity));
-                }
+                cursor.moveCursor((int)(smoothX * sensitivity), (int)(smoothY * sensitivity));
+                
 
             }
             prevX = pX;
