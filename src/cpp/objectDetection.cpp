@@ -70,7 +70,9 @@ void objectDetection::canMoveCursor(std::vector<std::vector<cv::Point>>& contour
                 smoothX = smoothX * smoothing + deltaX * (1.0f - smoothing);
                 smoothY = smoothY * smoothing + deltaY * (1.0f - smoothing);
 
-                cursor.moveCursor((int)(smoothX * sensitivity), (int)(smoothY * sensitivity));
+                if(canMoveCursorBool = true){
+                    cursor.moveCursor((int)(smoothX * sensitivity), (int)(smoothY * sensitivity));
+                }
 
             }
             prevX = pX;
@@ -141,14 +143,26 @@ void objectDetection::findFingers(const std::vector<std::vector<cv::Point>>& con
 
     //true is left click and false is right click
     if(fingerCount == 2 && hasLeftClicked == false){
+        canMoveCursorBool == true;
         cursor.click(true);
         hasLeftClicked = true;
+        cursor.ReleaseLeftClick();
     }else if(fingerCount == 0 && hasRightClicked == false){
+        canMoveCursorBool == true;
         cursor.click(false);
         hasRightClicked = true;
+        cursor.ReleaseLeftClick();
     }else if(fingerCount == 3){
+        canMoveCursorBool == true;
         hasLeftClicked = false;
         hasRightClicked = false;
+        cursor.ReleaseLeftClick();
+    }else if(fingerCount == 4){
+        canMoveCursorBool == true;
+        cursor.HoldLeftClick();
+    }else if(fingerCount == 5){
+        canMoveCursorBool == false;
+        cursor.ReleaseLeftClick();
     }
     
 }

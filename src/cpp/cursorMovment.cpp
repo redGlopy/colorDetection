@@ -34,3 +34,19 @@ void cursorMovment::click(bool isLeft){
     }
     
 }
+
+void cursorMovment::HoldLeftClick() {
+    INPUT input = {0};
+    input.type = INPUT_MOUSE;
+    input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+    
+    SendInput(1, &input, sizeof(INPUT));
+}
+
+void cursorMovment::ReleaseLeftClick() {
+    INPUT input = {0};
+    input.type = INPUT_MOUSE;
+    input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+    
+    SendInput(1, &input, sizeof(INPUT));
+}

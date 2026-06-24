@@ -46,7 +46,7 @@ void window::refreshWindow(){
 
     detection.detectColor(lowerColor, higherColor, BGRFrame, HSVFrame, mask, detection.contours);
 
-    cv::imshow("webcam feed", BGRFrame);
+    cv::imshow("webcam feed", mask);
 
     detection.canMoveCursor(detection.contours);
 }
